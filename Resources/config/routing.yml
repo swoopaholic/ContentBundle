@@ -1,0 +1,4 @@
+swoopaholic_document_admin:
+    resource: "@SwpContentBundle/Controller/DocumentController.php"
+    type:     annotation
+    prefix:   /admin/document

@@ -1,0 +1,12 @@
+{% extends '::base.html.twig' %}
+
+{% block content %}
+    {{ parent() }}
+    <div class="btn-group">
+        <a class="btn btn-default" href="{{ path('swoopaholic_menu_admin') }}">Back to the list</a>
+    </div>
+    <h1>Create menu item</h1>
+
+    {{ form(form) }}
+
+{% endblock %}

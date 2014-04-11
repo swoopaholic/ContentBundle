@@ -1,0 +1,29 @@
+{% extends "::base.html.twig" %}
+{% import "NvsRavenLayoutBundle:Table:crudtable.html.twig" as nvs_table %}
+{% import "NvsRavenLayoutBundle:Table:pager.html.twig" as nvs_pager %}
+
+{% block content %}
+    {{ parent() }}
+
+    <div class="container" role="main">
+        <div>
+            <h1>Documents</h1>
+            <p>Showing the document nodes</p>
+
+            <div class="btn-group">
+                <a class="btn btn-primary" href="{{ path('swoopaholic_document_admin_new') }}">
+                        Create a new entry
+                </a>
+            </div>
+
+        </div>
+        <div>
+            <div class="row">
+                <div class="col-xs-12">
+                    {{ nvs_table.table(table) }}
+                    {{ nvs_pager.pager(pager) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

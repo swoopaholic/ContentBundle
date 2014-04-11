@@ -1,0 +1,24 @@
+{% extends "AcmeNvsDemoBundle::layout.html.twig" %}
+
+{% block section_header %}
+    <{{ content.level }}>{{ content.content }}</{{ content.level }}>
+{% endblock %}
+
+{% block section_textarea %}
+    {{ content.text|raw }}
+{% endblock %}
+
+{% block content %}
+    {{ parent() }}
+
+    <div class="container" role="main">
+        <div>
+            {% for content in page %}
+                {% set block_name = 'section_' ~ content.type %}
+                {{ block(block_name) }}
+            {% endfor %}
+            {#<h1>{{ page.title }}</h1>#}
+            {#{{ page.content|raw }}#}
+        </div>
+    </div>
+{% endblock %}

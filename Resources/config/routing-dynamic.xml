@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="swp_content.dynamic_router.class">Symfony\Cmf\Component\Routing\DynamicRouter</parameter>
+        <parameter key="swp_content.route_model.class">null</parameter>
+        <parameter key="swp_content.uri_filter_regexp">null</parameter>
+        <parameter key="swp_content.nested_matcher.class">Symfony\Cmf\Component\Routing\NestedMatcher\NestedMatcher</parameter>
+        <parameter key="swp_content.final_matcher.class">Symfony\Cmf\Component\Routing\NestedMatcher\UrlMatcher</parameter>
+        <parameter key="swp_content.url_matcher.class">Symfony\Bundle\FrameworkBundle\Routing\RedirectableUrlMatcher</parameter>
+        <parameter key="swp_content.generator.class">Symfony\Cmf\Component\Routing\ContentAwareGenerator</parameter>
+        <parameter key="swp_content.enhancer.route_content.class">Symfony\Cmf\Component\Routing\Enhancer\RouteContentEnhancer</parameter>
+        <parameter key="swp_content.enhancer.default_controller.class">Symfony\Cmf\Component\Routing\Enhancer\FieldPresenceEnhancer</parameter>
+        <parameter key="swp_content.enhancer.explicit_template.class">Symfony\Cmf\Component\Routing\Enhancer\FieldPresenceEnhancer</parameter>
+        <parameter key="swp_content.enhancer.controllers_by_type.class">Symfony\Cmf\Component\Routing\Enhancer\FieldMapEnhancer</parameter>
+        <parameter key="swp_content.enhancer.field_by_class.class">Symfony\Cmf\Component\Routing\Enhancer\FieldByClassEnhancer</parameter>
+        <parameter key="swp_content.redirect_controller.class">Symfony\Cmf\Bundle\RoutingBundle\Controller\RedirectController</parameter>
+    </parameters>
+
+    <services>
+
+        <service id="swp_content.document_route_provider" class="Swoopaholic\Component\Routing\RouteProvider">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+            <argument>Swoopaholic\Bundle\ContentBundle\Entity\Document</argument>
+            <call method="addTemplateController">
+                <argument>default</argument>
+                <argument>SwpContentBundle:Document:view</argument>
+            </call>
+        </service>
+
+        <service id="swp_content.enhancer.route_content" class="%swp_content.enhancer.route_content.class%">
+            <argument>_route_object</argument>
+            <argument>_content</argument>
+        </service>
+
+        <service id="swp_content.enhancer.default_controller" class="%swp_content.enhancer.default_controller.class%" public="false">
+            <argument>null</argument>
+            <argument>_controller</argument>
+            <argument>%swp_content.default_controller%</argument>
+        </service>
+
+        <service id="swp_content.enhancer.explicit_template" class="%swp_content.enhancer.explicit_template.class%" public="false">
+            <argument>_template</argument>
+            <argument>_controller</argument>
+            <argument>%swp_content.generic_controller%</argument>
+        </service>
+
+        <service id="swp_content.enhancer.controllers_by_type" class="%swp_content.enhancer.controllers_by_type.class%" public="false">
+            <argument>type</argument>
+            <argument>_controller</argument>
+            <argument>%swp_content.controllers_by_type%</argument>
+        </service>
+
+        <service id="swp_content.enhancer.controllers_by_class" class="%swp_content.enhancer.field_by_class.class%" public="false">
+            <argument>_content</argument>
+            <argument>_controller</argument>
+            <argument>%swp_content.controllers_by_class%</argument>
+        </service>
+
+        <service id="swp_content.enhancer.controller_for_templates_by_class" class="%swp_content.enhancer.field_by_class.class%" public="false">
+            <argument>_content</argument>
+            <argument>_controller</argument>
+            <argument type="collection" />
+        </service>
+
+        <service id="swp_content.enhancer.templates_by_class" class="%swp_content.enhancer.field_by_class.class%" public="false">
+            <argument>_content</argument>
+            <argument>_template</argument>
+            <argument>%swp_content.templates_by_class%</argument>
+        </service>
+
+        <service id="swp_content.dynamic_router" class="%swp_content.dynamic_router.class%">
+            <argument type="service" id="router.request_context"/>
+            <argument type="service" id="swp_content.nested_matcher" />
+            <argument type="service" id="swp_content.generator" />
+            <argument>%swp_content.uri_filter_regexp%</argument>
+            <argument type="service" id="event_dispatcher" on-invalid="ignore"/>
+            <argument type="service" id="swp_content.route_provider"/>
+            <!--<call method="setContainer"><argument type="service" id="service_container"/></call>-->
+            <call method="addRouteEnhancer">
+                <argument type="service" id="swp_content.enhancer.route_content"/>
+                <argument>100</argument>
+            </call>
+        </service>
+
+        <service id="swp_content.nested_matcher" class="%swp_content.nested_matcher.class%">
+            <argument type="service" id="swp_content.route_provider" />
+            <argument type="service" id="swp_content.final_matcher"/>
+        </service>
+
+        <service id="swp_content.matcher.dummy_collection" class="Symfony\Component\Routing\RouteCollection" public="false"/>
+
+        <service id="swp_content.matcher.dummy_context" class="Symfony\Component\Routing\RequestContext" public="false"/>
+
+        <service id="swp_content.final_matcher" class="%swp_content.final_matcher.class%">
+            <argument type="service" id="swp_content.matcher.dummy_collection"/>
+            <argument type="service" id="swp_content.matcher.dummy_context"/>
+        </service>
+
+        <service id="swp_content.generator" class="%swp_content.generator.class%">
+            <argument type="service" id="swp_content.route_provider" />
+            <argument type="service" id="logger" on-invalid="ignore" />
+        </service>
+
+        <service id="swp_content.redirect_controller" class="%swp_content.redirect_controller.class%">
+            <argument type="service" id="router" />
+        </service>
+
+    </services>
+</container>
