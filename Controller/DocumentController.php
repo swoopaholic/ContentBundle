@@ -45,7 +45,7 @@ class DocumentController extends Controller
         $router = $this->get('router');
 
         $currentPage = (int) $request->get('page', 1);
-        $maxPerPage = $this->container->getParameter('nvs_framework.tables.max_per_page');
+        $maxPerPage = $this->container->getParameter('swp_framework.tables.max_per_page');
 
         $adapter = new \Pagerfanta\Adapter\DoctrineORMAdapter($this->getQueryBuilder($request));
 
@@ -53,7 +53,7 @@ class DocumentController extends Controller
         $pagerfanta->setMaxPerPage($maxPerPage);
         $pagerfanta->setCurrentPage($currentPage);
 
-        $factory = $this->get('nvs_framework.crud_table.factory');
+        $factory = $this->get('swp_framework.crud_table.factory');
         $factory->setRoute($route)
             ->setItemActionCallback(array($this, 'createActions'))
             ->setData($pagerfanta->getIterator())
